@@ -2,7 +2,6 @@
 #include<bits/stdc++.h>
 using namespace std;
 vector<int> v; // global vector to save counted nodes
-//create 2d array
 void PrintGraph(vector<vector<int>> x){
     for (int i = 0; i < x.size(); i++) {
         for (int j = 0; j < x[i].size(); j++){
@@ -11,6 +10,7 @@ void PrintGraph(vector<vector<int>> x){
         cout<< "\n";
     }
 }
+//create 2d array
 vector<vector<int >> CreateGraph (int n,int e){
     vector<vector<int> > vec( n , vector<int> (n, 0)); // NxN matrix with zeros
     int count = 0 ;
