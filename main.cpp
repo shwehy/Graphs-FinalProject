@@ -4,14 +4,14 @@ using namespace std;
 class Question1{
 public:
     vector<int> v; // global vector to save counted nodes
-    void PrintGraph(vector<vector<int>> x){//to print the array if we want
-        for (int i = 0; i < x.size(); i++) {
-            for (int j = 0; j < x[i].size(); j++){
-                cout<< x[i][j]<< " ";
-            }
-            cout<< "\n";
-        }
-    }
+//    void PrintGraph(vector<vector<int>> x){//to print the array if we want     /////UNUSED FUNCTIONN
+//        for (int i = 0; i < x.size(); i++) {
+//            for (int j = 0; j < x[i].size(); j++){
+//                cout<< x[i][j]<< " ";
+//            }
+//            cout<< "\n";
+//        }
+//    }
 //create 2d array
     vector<vector<int >> CreateGraph (int n,int e){
         vector<vector<int> > vec( n , vector<int> (n, 0)); // NxN matrix with zeros
@@ -85,6 +85,133 @@ public:
         cout<<"There are "<< connections<<" people with "<<k<< " connections away starting from "<<s ;
     }
 };
+class Question2{
+public:
+    typedef struct ordinate{
+        int x;
+        int y;
+    }Ordinate;
+    stack <Ordinate> Route;
+    int dir=0;//1 is down 2 is up 3 is right 4 is left
+    bool solved=false;
+    bool back= false;
+    vector<vector<int >> Graph (int n){
+        vector<vector<int> > vec( n , vector<int> (n, 0)); // NxN matrix with zeros
+        cout<<"please enter values for maze: "<<endl;
+        for(int i =0;i<n;i++){
+            for(int j=0;j<n;j++){
+                cin>>vec[i][j];
+            }
+        }
+        return vec;
+    }
+    vector<vector<bool >> initializeBool(int n){
+        vector<vector<bool> > vec( n , vector<bool> (n, 0));
+        for(int i =0;i<n;i++){
+            for(int j=0;j<n;j++){
+                vec[i][j]=false;
+            }
+        }
+        return vec;
+    }
+    void Solve(vector<vector<int>> vec, vector<vector<bool> > visited,int x,int y,int n){
+        Ordinate temp;
+        temp.x=x;
+        temp.y=y;
+        visited[x][y]=true;
+        if(back==false)
+            Route.push(temp);
+        if((x==n-1 && y==n-1)||solved==true){
+            solved = true;
+            return;
+        }
+        if(Route.empty()){
+            return;
+        }
+        if(x+1>0&&x+1<n&&vec[x+1][y]==0&&visited[x+1][y]==false)
+        {
+            dir =1;
+            back=false;
+            Solve(vec,visited,x+1,y,n);
+        }
+        else if(x-1>0&&x-1<n&&vec[x-1][y]==0&&visited[x-1][y]==false){
+            dir=2;
+            back=false;
+            Solve(vec,visited,x-1,y,n);
+        }
+        else if(y+1>0&&y+1<n&&vec[x][y+1]==0&&visited[x][y+1]==false){
+            dir=3;
+            back=false;
+            Solve(vec,visited,x,y+1,n);
+        }
+        else if(y-1>0&&y-1<n&&vec[x][y-1]==0&&visited[x][y-1]==false){
+            dir =4;
+            back=false;
+            Solve(vec,visited,x,y-1,n);
+        }
+        else{
+            Route.pop();
+            if(dir==1){
+                back=true;
+                dir=0;
+                Solve(vec,visited,x-1,y,n);
+            }
+            else if(dir==2){
+                back=true;
+                dir=0;
+
+                Solve(vec,visited,x+1,y,n);
+            }
+            else if(dir==3){
+                back=true;
+                dir=0;
+
+                Solve(vec,visited,x,y-1,n);
+            }
+            else if(dir==4){
+                back=true;
+                dir=0;
+
+                Solve(vec,visited,x,y+1,n);
+            }
+            return;
+        }
+
+    }
+
+    void PrintRoute(){
+        stack<Ordinate> s;
+        cout<<"The Route us --> ";
+        while(!(Route.empty())){
+            Ordinate temp;
+            temp = Route.top();
+            Route.pop();
+            s.push(temp);
+        }
+        while(!(s.empty())){
+            Ordinate temp;
+            temp = s.top();
+            s.pop();
+            cout<<"("<<temp.x<<","<<temp.y<<") ";
+        }
+        cout<<endl;
+    }
+
+    void Solve2(){
+        int n;
+        cout<<"please enter N: ";
+        cin>>n;
+        vector<vector<int> > vec=Graph(n);
+        vector<vector<bool> > visited=initializeBool(n);
+        Solve(vec,visited,0,0,n);
+        if(solved){
+            PrintRoute();
+        }
+        else{
+            cout<<"No path Found "<<endl;
+        }
+    }
+};
 class Question3{
 public:
     typedef struct flight{
@@ -96,22 +223,23 @@ public:
     }Flight;//datatype for flights
     queue<queue<Flight>> bigQeue;
     queue<Flight> q;
-    void PrintGraph(vector<vector<Flight>> x){//used to check that the 2d is correct // it is useless now in the program we can delete it
-        for (int i = 0; i < x.size(); i++) {
-            for (int j = 0; j < x[i].size(); j++){
-                cout<< x[i][j].pay<< " ";
-            }
-            cout<<"\t";
-            for (int j = 0; j < x[i].size(); j++){
-                cout<< x[i][j].time<< " ";
-            }
-            cout<< "\n";
-        }
-    }
+//    void PrintGraph(vector<vector<Flight>> x){//used to check that the 2d is correct // it is useless now in the program we can delete it
+//        for (int i = 0; i < x.size(); i++) {
+//            for (int j = 0; j < x[i].size(); j++){
+//                cout<< x[i][j].pay<< " ";
+//            }
+//            cout<<"\t";
+//            for (int j = 0; j < x[i].size(); j++){
+//                cout<< x[i][j].time<< " ";
+//            }
+//            cout<< "\n";
+//        }
+//    }
     vector<vector<Flight >> CreateFlight (int n,int e){
         vector<vector<Flight> > vec( n , vector<Flight> (n));
         int count = 0 ;
         int x , y,p,t; // vertex , edge , pay and time
+        cout<<"please enter source , destination time and cost for each route: ";
         while(count!=e){
             cin>>x >>y >> t >> p;
             y=y-1;x=x-1;
@@ -142,22 +270,22 @@ public:
             }//there is a flight in these coordinate
         }
     }
-    void ShowQueue(queue<queue<Flight>> k){//unused function to check what is in queue
-        while(!(k.empty())){
-            queue <Flight> temp;
-            temp = k.front();
-            k.pop();
-            while (!(temp.empty())){
-                Flight t = temp.front();
-                temp.pop();
-                cout<<t.from<<"--> ";
-                if(temp.empty())
-                    cout<< t.to;
-            }
-            cout<<"\n";
-//        k.push(temp);
-        }
-    }
+//    void ShowQueue(queue<queue<Flight>> k){//unused function to check what is in queue
+//        while(!(k.empty())){
+//            queue <Flight> temp;
+//            temp = k.front();
+//            k.pop();
+//            while (!(temp.empty())){
+//                Flight t = temp.front();
+//                temp.pop();
+//                cout<<t.from<<"--> ";
+//                if(temp.empty())
+//                    cout<< t.to;
+//            }
+//            cout<<"\n";
+////        k.push(temp);
+//        }
+//    }
     /*
      * The MinPrice Function simply works as i check all routes that are possible to achieve my destination
      * We will pop routes From 2D Queue
@@ -238,7 +366,9 @@ int main() {
             cout<<"\n---------------------------\n";
         }
         else if(choice == 2){
-
+            Question2 q2;
+            q2.Solve2();
+            cout<<"\n---------------------------\n";
         }
         else if(choice == 3){
             Question3 q3;
